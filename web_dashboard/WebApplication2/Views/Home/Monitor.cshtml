@@ -1,0 +1,73 @@
+﻿
+@{
+    ViewData["Title"] = "Monitor";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Monitor</h2>
+<div class="wrapper">
+    <div class="box">
+        <div id="temperatureGauge" class="gauge"></div>
+        <h1>Temperatura</h1>
+    </div>
+    <div class="box">
+        <div id="humidityGauge" class="gauge"></div>
+        <h1>Humedad</h1>
+    </div>
+    @*<div class="box">
+        <div id="temperatureAverageGauge" class="gauge"></div>
+        <h1>Temp. AVG</h1>
+    </div>
+    <div class="box">
+        <div id="humidityAverageGauge" class="gauge"></div>
+        <h1>Hum. AVG</h1>
+    </div>
+    <div>Last read: <span id="lastRead"></span></div>*@
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function (event) {
+        var gaugeOptions = {
+            value: 0,
+            min: 0,
+            max: 100,
+            pointer: true,
+            gaugeWidthScale: 0.6,
+            customSectors: [{
+                color: '#ff0000',
+                lo: 50,
+                hi: 100
+            }, {
+                color: '#00ff00',
+                lo: 0,
+                hi: 50
+            }],
+            counter: true
+        };
+
+        var temperatureGauge = new JustGage($.extend(gaugeOptions, { id: "temperatureGauge", symbol: "º" }));
+        var humidityGauge = new JustGage($.extend(gaugeOptions, { id: "humidityGauge", symbol: "%" }));
+
+        var temperatureAverageGauge = new JustGage($.extend(gaugeOptions, { id: "temperatureAverageGauge", symbol: "º" }));
+        var humidityAverageGauge = new JustGage($.extend(gaugeOptions, { id: "humidityAverageGauge", symbol: "%" }));
+
+        setInterval(function () {
+
+            console.log("updating....");
+
+            $.get("@Url.Action("GetUpdate")")
+                .then(function (data) {
+                    console.log(data);
+
+                    temperatureGauge.refresh(data.temperature);
+                    humidityGauge.refresh(data.humidity);
+
+                    temperatureAverageGauge.refresh(data.temperatureAverage);
+                    humidityAverageGauge.refresh(data.humidityAverage);
+
+                    $("#lastRead").text(Date(data.timestamp));
+                });
+
+        }, 2000);
+    });
+</script>
