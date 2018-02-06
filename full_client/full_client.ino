@@ -86,16 +86,21 @@ void loop() {
   client.loop();
 
   long now = millis();
-  if (now - lastMsg > 20000) {
+  if (now - lastMsg > 5000) {
     lastMsg = now;
 
     float h = dht.readHumidity();
     float t = dht.readTemperature();
 
+    if(t != t || h!=h){
+      Serial.println("Read error");
+      return;
+    }
+
     String payload = "{";
-    payload += "\"t\":\"";
+    payload += "\"t\":";
     payload += t;
-    payload += "\",\"h\":\"";
+    payload += ",\"h\":\"";
     payload += h;
     payload += "\"}";
 
