@@ -1,10 +1,12 @@
 ﻿namespace WebApplication2.Models
 {
+    using Microsoft.Azure.Devices;
     using Microsoft.Azure.Documents;
     using Microsoft.Azure.Documents.Client;
     using Newtonsoft.Json;
     using System;
     using System.Linq;
+    using System.Text;
 
     public class Item
     {
@@ -28,17 +30,27 @@
 
     }
 
-    public class DocumentService
+    public class DeviceService
     {
         private static readonly string Endpoint = "";
         private static readonly string Key = "";
-        private static readonly string DatabaseId = "";
-        private static readonly string CollectionId = "";
+        private static readonly string DatabaseId = "sensordata";
+        private static readonly string CollectionId = "daily";
+        private static readonly string IoTHubConnectionString = "";
+        private static string deviceID = "";
         private static DocumentClient docClient;
+        private static ServiceClient serviceClient;
 
-        public DocumentService()
+        public DeviceService()
         {
             docClient = new DocumentClient(new Uri(Endpoint), Key);
+            serviceClient = ServiceClient.CreateFromConnectionString(IoTHubConnectionString, TransportType.Amqp);
+        }
+
+        public async System.Threading.Tasks.Task SendMessageAsync(string messageToSend)
+        {
+            var message = new Message(Encoding.ASCII.GetBytes(messageToSend));
+            await serviceClient.SendAsync(deviceID, message)    ;
         }
 
         public Item GetUpdate()

@@ -15,17 +15,22 @@
         <h1>Humedad</h1>
     </div>
     @*<div class="box">
-        <div id="temperatureAverageGauge" class="gauge"></div>
-        <h1>Temp. AVG</h1>
-    </div>
-    <div class="box">
-        <div id="humidityAverageGauge" class="gauge"></div>
-        <h1>Hum. AVG</h1>
-    </div>
-    <div>Last read: <span id="lastRead"></span></div>*@
+            <div id="temperatureAverageGauge" class="gauge"></div>
+            <h1>Temp. AVG</h1>
+        </div>
+        <div class="box">
+            <div id="humidityAverageGauge" class="gauge"></div>
+            <h1>Hum. AVG</h1>
+        </div>
+        <div>Last read: <span id="lastRead"></span></div>*@
+    <button id="toggleButton" status="1">Toggle Light</button>
 </div>
 
 <script>
+    window.iotconfig = {
+        autoRefresh: false
+    };
+
     document.addEventListener("DOMContentLoaded", function (event) {
         var gaugeOptions = {
             value: 0,
@@ -48,10 +53,21 @@
         var temperatureGauge = new JustGage($.extend(gaugeOptions, { id: "temperatureGauge", symbol: "º" }));
         var humidityGauge = new JustGage($.extend(gaugeOptions, { id: "humidityGauge", symbol: "%" }));
 
-        var temperatureAverageGauge = new JustGage($.extend(gaugeOptions, { id: "temperatureAverageGauge", symbol: "º" }));
-        var humidityAverageGauge = new JustGage($.extend(gaugeOptions, { id: "humidityAverageGauge", symbol: "%" }));
+        //var temperatureAverageGauge = new JustGage($.extend(gaugeOptions, { id: "temperatureAverageGauge", symbol: "º" }));
+        //var humidityAverageGauge = new JustGage($.extend(gaugeOptions, { id: "humidityAverageGauge", symbol: "%" }));
+
+        $("#toggleButton").on("click", function () {
+            var status = $(this).attr("status");
+            $(this).attr("status", status == "1" ? "0" : "1");
+            $.post("@Url.Action("SendToDevice")", { message: status });
+        });
 
         setInterval(function () {
+
+            if (iotconfig.autoRefresh != true) {
+                console.log("no autorefresh");
+                return;
+            }
 
             console.log("updating....");
 
@@ -62,8 +78,8 @@
                     temperatureGauge.refresh(data.temperature);
                     humidityGauge.refresh(data.humidity);
 
-                    temperatureAverageGauge.refresh(data.temperatureAverage);
-                    humidityAverageGauge.refresh(data.humidityAverage);
+                    //temperatureAverageGauge.refresh(data.temperatureAverage);
+                    //humidityAverageGauge.refresh(data.humidityAverage);
 
                     $("#lastRead").text(Date(data.timestamp));
                 });

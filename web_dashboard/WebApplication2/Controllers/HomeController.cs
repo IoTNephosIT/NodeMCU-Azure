@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using SensorsClient.Models;
-using WebApplication2.Models;
-
-namespace WebApplication2.Controllers
+﻿namespace WebApplication2.Controllers
 {
+    using System.Diagnostics;
+    using Microsoft.AspNetCore.Mvc;
+    using SensorsClient.Models;
+    using WebApplication2.Models;
+
     public class HomeController : Controller
     {
-        DocumentService cosmosAPIService = new DocumentService();
+        DeviceService deviceService = new DeviceService();
 
-           public IActionResult Index()
+        public IActionResult Index()
         {
             return View();
         }
@@ -23,11 +19,16 @@ namespace WebApplication2.Controllers
             return View();
         }
 
+        public void SendToDevice(string message)
+        {
+            deviceService.SendMessageAsync(message).Wait();
+        }
+
         public IActionResult GetUpdate()
         {
-            var update = cosmosAPIService.GetUpdate();
+            var update = deviceService.GetUpdate();
 
-            if(int.TryParse( update.Humidity.Split('.')[0], out int h) && int.TryParse(update.Temperature.Split('.')[0], out int t))
+            if (int.TryParse(update.Humidity.Split('.')[0], out int h) && int.TryParse(update.Temperature.Split('.')[0], out int t))
             {
                 var data = new SensorData
                 {
