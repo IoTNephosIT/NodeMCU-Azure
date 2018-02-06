@@ -1,0 +1,8 @@
+#define NETWORK_SSID "MOVISTAR_AAAA"
+#define NETWORK_PASSWORD "12312312312"
+#define MQTT_URL "myiothub.azure-devices.net"
+#define DEVICE_NAME "DeviceName"
+#define INPUT_TOPIC "devices/DeviceName/messages/devicebound/#"
+#define OUTPUT_TOPIC "devices/DeviceName/messages/events/"
+#define USER_NAME "myiothub.azure-devices.net/DeviceName"
+#define SAS "SharedAccessSignature sr=myiothub.azure-devices.net&sig=gMHdikUxYM9EMQNtErt21WDT3rujwsv2341ddMNHTS8iI%3D&se=34232323&skn=iothubowner"
