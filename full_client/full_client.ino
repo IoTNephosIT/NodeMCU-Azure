@@ -4,11 +4,13 @@
 #include "DHT.h"
 #include "Config.h"
 #define DHTTYPE DHT11
+#define LED D0
 
 const int DHTPin = 2;
 const char* ssid = NETWORK_SSID;
 const char* password = NETWORK_PASSWORD;
 const char* mqtt_server = MQTT_URL;
+bool ledOn = false;
 
 DHT dht(DHTPin, DHTTYPE);
 WiFiClientSecure espClient;
@@ -46,10 +48,12 @@ void callback(char* topic, byte* payload, unsigned int length) {
   }
   Serial.println();
 
-  if ((char)payload[0] == '1') {
-    digitalWrite(BUILTIN_LED, LOW);
+  if ((char)payload[0] == '0') {
+    digitalWrite(LED, LOW);
+    ledOn = false;
   } else {
-    digitalWrite(BUILTIN_LED, HIGH);
+    digitalWrite(LED, HIGH);
+    ledOn = true;
   }
 }
 
@@ -70,7 +74,7 @@ void reconnect() {
 }
 
 void setup() {
-  pinMode(BUILTIN_LED, OUTPUT);
+  pinMode(LED, OUTPUT);
   Serial.begin(115200);
   dht.begin();
   setup_wifi();
@@ -100,9 +104,11 @@ void loop() {
     String payload = "{";
     payload += "\"t\":";
     payload += t;
-    payload += ",\"h\":\"";
+    payload += ",\"h\":";
     payload += h;
-    payload += "\"}";
+    payload += ",\"l\":";
+    payload += ledOn;
+    payload += "}";
 
 
     Serial.print("Publish message: ");
