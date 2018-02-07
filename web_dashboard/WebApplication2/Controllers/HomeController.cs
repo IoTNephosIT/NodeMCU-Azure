@@ -35,8 +35,7 @@
                     Humidity = h,
                     Temperature = t,
                     Timestamp = update.TimeStamp,
-                    HumidityAverage = 10, //r.HumidityAverage,
-                    TemperatureAverage = 12 //r.TemperatureAverage
+                    LedOn = update.LedOn
                 };
                 return base.Json(data);
             }

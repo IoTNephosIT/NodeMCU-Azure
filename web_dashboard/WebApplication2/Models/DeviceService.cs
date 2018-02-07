@@ -25,6 +25,9 @@
         [JsonProperty(PropertyName = "havg")]
         public string HumidityAverage { get; set; }
 
+        [JsonProperty(PropertyName = "l")]
+        public bool LedOn { get; set; }
+
         [JsonProperty(PropertyName = "_ts")]
         public string TimeStamp { get; set; }
 

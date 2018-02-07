@@ -14,21 +14,12 @@
         <div id="humidityGauge" class="gauge"></div>
         <h1>Humedad</h1>
     </div>
-    @*<div class="box">
-            <div id="temperatureAverageGauge" class="gauge"></div>
-            <h1>Temp. AVG</h1>
-        </div>
-        <div class="box">
-            <div id="humidityAverageGauge" class="gauge"></div>
-            <h1>Hum. AVG</h1>
-        </div>
-        <div>Last read: <span id="lastRead"></span></div>*@
-    <button id="toggleButton" status="1">Toggle Light</button>
+    <button id="toggleButton" status="0">Toggle Light</button>
 </div>
 
 <script>
     window.iotconfig = {
-        autoRefresh: false
+        autoRefresh: true
     };
 
     document.addEventListener("DOMContentLoaded", function (event) {
@@ -53,9 +44,6 @@
         var temperatureGauge = new JustGage($.extend(gaugeOptions, { id: "temperatureGauge", symbol: "º" }));
         var humidityGauge = new JustGage($.extend(gaugeOptions, { id: "humidityGauge", symbol: "%" }));
 
-        //var temperatureAverageGauge = new JustGage($.extend(gaugeOptions, { id: "temperatureAverageGauge", symbol: "º" }));
-        //var humidityAverageGauge = new JustGage($.extend(gaugeOptions, { id: "humidityAverageGauge", symbol: "%" }));
-
         $("#toggleButton").on("click", function () {
             var status = $(this).attr("status");
             $(this).attr("status", status == "1" ? "0" : "1");
@@ -78,8 +66,7 @@
                     temperatureGauge.refresh(data.temperature);
                     humidityGauge.refresh(data.humidity);
 
-                    //temperatureAverageGauge.refresh(data.temperatureAverage);
-                    //humidityAverageGauge.refresh(data.humidityAverage);
+                    $("#toggleButton").toggleClass("btn-danger", data.ledOn);
 
                     $("#lastRead").text(Date(data.timestamp));
                 });
